@@ -1,0 +1,53 @@
+name: Release Windows
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to upload assets to
+        required: true
+        default: v1.1.1
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Windows installer
+        run: npm run dist
+
+      - name: Prepare release assets
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          New-Item -ItemType Directory -Force -Path release-assets | Out-Null
+          $installer = "release/Capsule Tasks Setup $version.exe"
+          $zip = "release-assets/Capsule Tasks Setup $version.zip"
+          Compress-Archive -LiteralPath $installer -DestinationPath $zip -Force
+          "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Upload assets
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = $env:VERSION
+          gh release upload "${{ inputs.tag }}" `
+            "release/Capsule Tasks Setup $version.exe#Capsule.Tasks.Setup.$version.exe" `
+            "release-assets/Capsule Tasks Setup $version.zip#Capsule.Tasks.Setup.$version.zip" `
+            --clobber
