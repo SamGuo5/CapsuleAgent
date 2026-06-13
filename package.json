@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron .",
-    "dist": "electron-builder --win --config.win.signAndEditExecutable=false"
+    "dist": "electron-builder --win --config.win.signAndEditExecutable=false --publish never"
   },
   "keywords": [],
   "author": "",
