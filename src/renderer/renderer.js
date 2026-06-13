@@ -680,8 +680,9 @@
   }
 
   let toastTimer;
-  function showToast(message, action) {
+  function showToast(message, action, duration = 2200) {
     clearTimeout(toastTimer);
+    elements.toast.classList.remove('reminder-toast');
     elements.toast.innerHTML = `<span>${escapeHtml(message)}</span>`;
     if (action) {
       const button = document.createElement('button');
@@ -695,7 +696,29 @@
       elements.toast.appendChild(button);
     }
     elements.toast.classList.add('visible');
-    toastTimer = setTimeout(() => elements.toast.classList.remove('visible'), 2200);
+    toastTimer = setTimeout(() => elements.toast.classList.remove('visible'), duration);
+  }
+
+  function showReminderToast(task) {
+    if (!task?.id) return;
+    const dueText = formatDueDate(task.dueDate);
+    clearTimeout(toastTimer);
+    elements.toast.classList.add('reminder-toast');
+    elements.toast.innerHTML = `
+      <img src="assets/samguo-avatar.svg" alt="" />
+      <span><strong>任务提醒</strong>${escapeHtml(task.title)} · ${escapeHtml(dueText)}</span>
+    `;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = '查看';
+    button.addEventListener('click', () => {
+      clearTimeout(toastTimer);
+      elements.toast.classList.remove('visible', 'reminder-toast');
+      focusTask(task.id);
+    }, { once: true });
+    elements.toast.appendChild(button);
+    elements.toast.classList.add('visible');
+    toastTimer = setTimeout(() => elements.toast.classList.remove('visible', 'reminder-toast'), 9000);
   }
 
   function showDeleteUndo(tasks) {
@@ -1463,6 +1486,9 @@
   });
 
   window.capsule.onTaskFocus(focusTask);
+  window.capsule.onReminderDue((task) => {
+    showReminderToast(task);
+  });
   window.capsule.onQuickAddFocus(() => {
     elements.title.focus();
   });

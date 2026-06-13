@@ -92,7 +92,7 @@ docs/
 
 ## 版本
 
-当前版本：`1.1.0`
+当前版本：`1.1.1`
 
 更多变更见 [CHANGELOG.md](CHANGELOG.md)。
 

@@ -92,7 +92,7 @@ docs/
 
 ## Version
 
-Current version: `1.1.0`
+Current version: `1.1.1`
 
 See [CHANGELOG.md](CHANGELOG.md) for more details.
 

@@ -31,6 +31,7 @@ const store = new Store({
 let mainWindow;
 let tray;
 let reminderTimer;
+let reminderSweepQueued = false;
 const notifiedKeys = new Set();
 
 const priorities = ['low', 'medium', 'high'];
@@ -102,6 +103,7 @@ function setTasks(tasks) {
   backupToday();
   updateTrayMenu();
   broadcastState();
+  queueReminderSweep();
 }
 
 function getSettings() {
@@ -213,6 +215,62 @@ function getReminderTime(task) {
   return dueTime - Number(task.reminderOffset || 0) * 60 * 1000;
 }
 
+function sendReminderToRenderer(task) {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  mainWindow.webContents.send('reminder:due', {
+    id: task.id,
+    title: task.title,
+    dueDate: task.dueDate,
+    project: task.project,
+    reminderOffset: task.reminderOffset
+  });
+  if (!mainWindow.isFocused()) mainWindow.flashFrame(true);
+}
+
+function showTrayReminder(task, offsetLabel) {
+  if (!tray || typeof tray.displayBalloon !== 'function') return;
+  try {
+    tray.displayBalloon({
+      title: offsetLabel,
+      content: task.title,
+      icon: appIconPath,
+      noSound: false
+    });
+  } catch {
+    // Some Windows notification settings disable tray balloons; the in-app reminder still works.
+  }
+}
+
+function showSystemReminder(task, offsetLabel) {
+  if (!Notification.isSupported()) {
+    showTrayReminder(task, offsetLabel);
+    return;
+  }
+
+  try {
+    const notification = new Notification({
+      title: offsetLabel,
+      body: task.title,
+      icon: appIconPath,
+      silent: false,
+      urgency: 'critical',
+      actions: [{ type: 'button', text: '延后 10 分钟' }]
+    });
+
+    notification.on('click', () => {
+      showWindow();
+      mainWindow?.flashFrame(false);
+      mainWindow?.webContents.send('task:focus', task.id);
+    });
+    notification.on('action', (_event, index) => {
+      if (index === 0) postponeTaskById(task.id, 10, 'minute');
+    });
+    notification.show();
+  } catch {
+    showTrayReminder(task, offsetLabel);
+  }
+}
+
 function getNextRepeatDate(dueDate, repeatRule) {
   const next = new Date(dueDate);
   if (Number.isNaN(next.getTime())) return '';
@@ -305,6 +363,7 @@ function postponeTaskById(taskId, amount, unit) {
 }
 
 function emitDueNotifications() {
+  reminderSweepQueued = false;
   const now = Date.now();
   getTasks().forEach((task) => {
     if (!task.dueDate || task.completed) return;
@@ -314,26 +373,21 @@ function emitDueNotifications() {
 
     notifiedKeys.add(key);
     const offsetLabel = task.reminderOffset ? `提前 ${task.reminderOffset} 分钟` : '到期提醒';
-    const notification = new Notification({
-      title: offsetLabel,
-      body: task.title,
-      actions: [{ type: 'button', text: '延后 10 分钟' }]
-    });
-
-    notification.on('click', () => {
-      showWindow();
-      mainWindow?.webContents.send('task:focus', task.id);
-    });
-    notification.on('action', (_event, index) => {
-      if (index === 0) postponeTaskById(task.id, 10, 'minute');
-    });
-    notification.show();
+    sendReminderToRenderer(task);
+    showSystemReminder(task, offsetLabel);
   });
 }
 
 function startReminderPolling() {
   if (reminderTimer) clearInterval(reminderTimer);
   reminderTimer = setInterval(emitDueNotifications, 30 * 1000);
+  queueReminderSweep();
+}
+
+function queueReminderSweep() {
+  if (!app.isReady() || reminderSweepQueued) return;
+  reminderSweepQueued = true;
+  setTimeout(emitDueNotifications, 500);
 }
 
 ipcMain.handle('state:get', () => getState());

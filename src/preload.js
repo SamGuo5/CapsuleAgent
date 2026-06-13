@@ -36,6 +36,11 @@ contextBridge.exposeInMainWorld('capsule', {
     ipcRenderer.on('task:focus', listener);
     return () => ipcRenderer.removeListener('task:focus', listener);
   },
+  onReminderDue: (callback) => {
+    const listener = (_event, task) => callback(task);
+    ipcRenderer.on('reminder:due', listener);
+    return () => ipcRenderer.removeListener('reminder:due', listener);
+  },
   onQuickAddFocus: (callback) => {
     const listener = () => callback();
     ipcRenderer.on('quick-add:focus', listener);

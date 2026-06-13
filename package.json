@@ -1,6 +1,6 @@
 {
   "name": "capsule-tasks",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "清爽的本地桌面待办应用。",
   "main": "src/main.js",
   "scripts": {
