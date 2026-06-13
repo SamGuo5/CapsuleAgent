@@ -1016,8 +1016,8 @@
     elements.aboutContent.innerHTML = `
       <dl>
         <div><dt>版本</dt><dd>${escapeHtml(info.version)}</dd></div>
-        <div><dt>数据路径</dt><dd>${escapeHtml(info.userDataPath)}</dd></div>
-        <div><dt>备份路径</dt><dd>${escapeHtml(info.backupPath)}</dd></div>
+        <div><dt>数据位置</dt><dd>本机私有应用数据目录</dd></div>
+        <div><dt>备份位置</dt><dd>本机自动备份目录</dd></div>
       </dl>
     `;
     elements.aboutDialog.showModal();

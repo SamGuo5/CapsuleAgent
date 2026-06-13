@@ -22,9 +22,9 @@
       "src/**/*",
       "package.json",
       "CHANGELOG.md",
+      "LICENSE",
       "icon.ico",
-      "icon.png",
-      "node_modules/electron-store/**/*"
+      "icon.png"
     ],
     "extraResources": [
       {
