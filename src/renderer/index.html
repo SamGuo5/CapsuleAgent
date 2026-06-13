@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>胶囊待办</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="startup-splash" class="startup-splash" aria-hidden="true">
+      <div class="startup-card">
+        <img src="assets/samguo-avatar.svg" alt="" />
+        <div class="startup-copy">
+          <strong>Samguo 正在整理今日便签</strong>
+          <span>把事情变轻一点</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="app">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">Capsule Tasks</p>
+          <h1>把今天摊开，然后推进一件事。</h1>
+          <p class="header-note">胶囊小屋已经准备好便签、日历和一点点元气。</p>
+        </div>
+        <div class="mascot-card" aria-hidden="true">
+          <img src="assets/capsule-mascot.svg" alt="" />
+        </div>
+        <div class="header-actions">
+          <button id="theme-toggle" class="icon-button" type="button" title="切换主题">T</button>
+          <button id="focus-toggle" class="text-button" type="button">专注</button>
+          <button id="group-toggle" class="text-button" type="button">分组</button>
+          <button id="compact-toggle" class="text-button" type="button">紧凑</button>
+          <button id="collapse-done-toggle" class="text-button" type="button">隐藏完成</button>
+          <button id="settings-open" class="text-button" type="button">设置</button>
+          <button id="about-open" class="text-button" type="button">关于</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="task-surface">
+          <div class="surface-titlebar" aria-hidden="true">
+            <div>
+              <span class="sticker-dot"></span>
+              <strong>今日便签台</strong>
+            </div>
+            <span>轻轻放进一颗任务胶囊</span>
+          </div>
+
+          <form id="task-form" class="task-form">
+            <div class="input-row">
+              <input id="task-title" name="title" type="text" placeholder="添加一个任务" autocomplete="off" required />
+              <button class="primary-button" type="submit">添加</button>
+            </div>
+            <div class="detail-row">
+              <input name="dueDate" type="datetime-local" aria-label="截止时间" />
+              <select name="priority" aria-label="优先级">
+                <option value="low">低</option>
+                <option value="medium" selected>中</option>
+                <option value="high">高</option>
+              </select>
+              <select name="reminderOffset" aria-label="提醒">
+                <option value="0">到期时</option>
+                <option value="5">提前 5 分钟</option>
+                <option value="15">提前 15 分钟</option>
+                <option value="30">提前 30 分钟</option>
+                <option value="60">提前 1 小时</option>
+                <option value="1440">提前 1 天</option>
+              </select>
+              <select name="repeatRule" aria-label="重复">
+                <option value="none">不重复</option>
+                <option value="daily">每天</option>
+                <option value="weekly">每周</option>
+                <option value="monthly">每月</option>
+              </select>
+            </div>
+            <div class="quick-dates" aria-label="Quick due dates">
+              <button type="button" data-quick-due="today">今天 17:00</button>
+              <button type="button" data-quick-due="tomorrow">明天</button>
+              <button type="button" data-quick-due="weekend">周末</button>
+              <button type="button" data-quick-due="clear">无日期</button>
+            </div>
+            <div class="meta-row">
+              <input name="project" type="text" placeholder="项目，例如：工作" />
+              <input name="tags" type="text" placeholder="标签，用逗号分隔" />
+            </div>
+            <textarea name="notes" placeholder="备注、上下文、下一步"></textarea>
+          </form>
+
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span>⌕</span>
+              <input id="search-input" type="search" placeholder="搜索任务" />
+            </div>
+            <div id="filter-tabs" class="tabs" role="tablist" aria-label="Task filters">
+              <button class="tab active" type="button" data-filter="all">全部</button>
+              <button class="tab" type="button" data-filter="today">今天</button>
+              <button class="tab" type="button" data-filter="upcoming">即将</button>
+              <button class="tab" type="button" data-filter="overdue">逾期</button>
+              <button class="tab" type="button" data-filter="done">已完成</button>
+            </div>
+          </div>
+
+          <div id="bulk-bar" class="bulk-bar">
+            <strong id="bulk-count">已选 0 项</strong>
+            <input id="bulk-project-input" type="text" placeholder="移动到项目" />
+            <input id="bulk-tag-input" type="text" placeholder="添加标签" />
+            <button id="bulk-complete" class="secondary-button" type="button">完成</button>
+            <button id="bulk-postpone" class="secondary-button" type="button">+1d</button>
+            <button id="bulk-move" class="secondary-button" type="button">移动</button>
+            <button id="bulk-tag" class="secondary-button" type="button">标签</button>
+            <button id="bulk-delete" class="danger-button" type="button">删除</button>
+            <button id="bulk-clear" class="secondary-button" type="button">清空</button>
+          </div>
+
+          <div id="task-list" class="task-list" aria-live="polite"></div>
+        </section>
+
+        <aside class="insight-panel">
+          <section id="samguo-card" class="samguo-card" data-mood="ready">
+            <img src="assets/samguo-avatar.svg" alt="Samguo 的卡通形象" />
+            <div class="samguo-copy">
+              <p class="eyebrow">Samguo</p>
+              <strong id="samguo-title">今天也一起把事情变轻一点。</strong>
+              <span id="samguo-line">专属待办小搭子已上线。</span>
+              <small id="samguo-badge" class="samguo-badge">准备中</small>
+            </div>
+          </section>
+
+          <section class="today-card">
+            <p class="eyebrow">今天</p>
+            <strong id="date-label">--</strong>
+            <p id="focus-line">准备整理今天。</p>
+          </section>
+
+          <section class="stats">
+            <div>
+              <span>未完成</span>
+              <strong id="pending-count">0</strong>
+            </div>
+            <div>
+              <span>今天</span>
+              <strong id="today-count">0</strong>
+            </div>
+            <div>
+              <span>完成</span>
+              <strong id="done-count">0</strong>
+            </div>
+            <div>
+              <span>逾期</span>
+              <strong id="overdue-count">0</strong>
+            </div>
+            <div>
+              <span>本周</span>
+              <strong id="week-count">0</strong>
+            </div>
+          </section>
+
+          <section class="side-section collapsible">
+            <div class="section-head">
+              <h2>今日时间线</h2>
+              <span id="timeline-count">0</span>
+            </div>
+            <div id="timeline-list" class="timeline-list"></div>
+          </section>
+
+          <section class="side-section collapsible">
+            <div class="section-head">
+              <h2>未来 7 天</h2>
+            </div>
+            <div id="week-strip" class="week-strip"></div>
+          </section>
+
+          <section class="side-section collapsible collapsed">
+            <div class="section-head">
+              <h2>完成趋势</h2>
+              <span>7d</span>
+            </div>
+            <div id="done-trend" class="done-trend"></div>
+          </section>
+
+          <section class="side-section collapsible">
+            <div class="section-head">
+              <h2>项目</h2>
+              <span id="project-count">0</span>
+            </div>
+            <div id="project-list" class="pill-list"></div>
+          </section>
+
+          <section class="side-section collapsible collapsed">
+            <div class="section-head">
+              <h2>项目工具</h2>
+            </div>
+            <div class="project-tools">
+              <input id="project-rename-input" type="text" placeholder="重命名当前项目" />
+              <input id="project-color-input" type="color" value="#2563eb" title="项目颜色" />
+              <button id="project-rename" class="secondary-button" type="button">重命名</button>
+              <button id="project-color-save" class="secondary-button" type="button">颜色</button>
+            </div>
+            <button id="project-move-inbox" class="secondary-button full" type="button">移回 Inbox</button>
+          </section>
+
+          <section class="side-section collapsible">
+            <div class="section-head">
+              <h2>标签</h2>
+              <span id="tag-count">0</span>
+            </div>
+            <div id="tag-list" class="pill-list"></div>
+          </section>
+
+          <section class="side-section collapsible">
+            <div class="section-head">
+              <h2>高优先级</h2>
+              <span id="high-count">0</span>
+            </div>
+            <div id="priority-list" class="mini-list"></div>
+          </section>
+
+          <section class="side-section collapsible">
+            <div class="section-head">
+              <h2>下一步</h2>
+              <span id="next-count">0</span>
+            </div>
+            <div id="next-list" class="mini-list"></div>
+          </section>
+
+          <section class="side-section collapsible collapsed">
+            <div class="section-head">
+              <h2>数据</h2>
+            </div>
+            <div class="button-grid">
+              <button id="export-data" class="secondary-button" type="button">导出</button>
+              <button id="import-data" class="secondary-button" type="button">导入</button>
+            </div>
+            <button id="restore-backup" class="secondary-button full" type="button">恢复备份</button>
+            <button id="clear-completed" class="secondary-button full" type="button">清理已完成</button>
+          </section>
+
+          <section class="side-section collapsible collapsed">
+            <div class="section-head">
+              <h2>默认值</h2>
+            </div>
+            <p id="settings-summary" class="settings-summary">Inbox，到期提醒</p>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <dialog id="edit-dialog" class="dialog">
+      <form id="edit-form" method="dialog">
+        <div class="dialog-head">
+          <h2>编辑任务</h2>
+          <button id="close-editing" class="icon-button" type="button" title="关闭">X</button>
+        </div>
+        <input name="title" type="text" placeholder="任务标题" required />
+        <textarea name="notes" placeholder="备注"></textarea>
+        <div class="detail-row">
+          <input name="dueDate" type="datetime-local" aria-label="截止时间" />
+          <select name="priority" aria-label="优先级">
+            <option value="low">低</option>
+            <option value="medium">中</option>
+            <option value="high">高</option>
+          </select>
+          <select name="reminderOffset" aria-label="提醒">
+            <option value="0">到期时</option>
+            <option value="5">提前 5 分钟</option>
+            <option value="15">提前 15 分钟</option>
+            <option value="30">提前 30 分钟</option>
+            <option value="60">提前 1 小时</option>
+            <option value="1440">提前 1 天</option>
+          </select>
+          <select name="repeatRule" aria-label="重复">
+            <option value="none">不重复</option>
+            <option value="daily">每天</option>
+            <option value="weekly">每周</option>
+            <option value="monthly">每月</option>
+          </select>
+        </div>
+        <div class="quick-dates" aria-label="Quick edit due dates">
+          <button type="button" data-edit-quick-due="today">今天 17:00</button>
+          <button type="button" data-edit-quick-due="tomorrow">明天</button>
+          <button type="button" data-edit-quick-due="weekend">周末</button>
+          <button type="button" data-edit-quick-due="clear">无日期</button>
+        </div>
+        <div class="meta-row">
+          <input name="project" type="text" placeholder="项目" />
+          <input name="tags" type="text" placeholder="标签，用逗号分隔" />
+        </div>
+        <div class="dialog-actions">
+          <button id="delete-editing" class="danger-button" type="button">删除</button>
+          <button class="primary-button" value="default" type="submit">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="settings-dialog" class="dialog">
+      <form id="settings-form" method="dialog">
+        <div class="dialog-head">
+          <h2>设置</h2>
+          <button id="settings-close" class="icon-button" type="button" title="关闭">X</button>
+        </div>
+        <label class="setting-field">
+          <span>默认项目</span>
+          <input name="defaultProject" type="text" placeholder="Inbox" />
+        </label>
+        <label class="setting-field">
+          <span>默认提醒</span>
+          <select name="defaultReminderOffset">
+            <option value="0">到期时</option>
+            <option value="5">提前 5 分钟</option>
+            <option value="15">提前 15 分钟</option>
+            <option value="30">提前 30 分钟</option>
+            <option value="60">提前 1 小时</option>
+            <option value="1440">提前 1 天</option>
+          </select>
+        </label>
+        <label class="setting-check">
+          <input name="openAtLogin" type="checkbox" />
+          <span>开机自启动</span>
+        </label>
+        <div class="dialog-actions">
+          <span></span>
+          <button class="primary-button" value="default" type="submit">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="about-dialog" class="dialog">
+      <form method="dialog">
+        <div class="dialog-head">
+          <h2>关于胶囊待办</h2>
+          <button id="about-close" class="icon-button" type="button" title="关闭">X</button>
+        </div>
+        <div id="about-content" class="about-content"></div>
+        <div class="dialog-actions">
+          <button id="open-backup-dir" class="secondary-button" type="button">打开备份目录</button>
+          <button class="primary-button" value="default" type="submit">完成</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="command-dialog" class="dialog command-dialog">
+      <form id="command-form" method="dialog">
+        <div class="dialog-head">
+          <h2>命令面板</h2>
+          <button id="close-command" class="icon-button" type="button" title="关闭">X</button>
+        </div>
+        <input id="command-input" type="search" placeholder="搜索命令或任务" autocomplete="off" />
+        <div id="command-results" class="command-results"></div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="renderer.js"></script>
+  </body>
+</html>

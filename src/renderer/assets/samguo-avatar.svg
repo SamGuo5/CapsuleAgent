@@ -1,0 +1,22 @@
+<svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Samguo cartoon avatar">
+  <rect x="22" y="30" width="176" height="164" rx="54" fill="#FFF7DF"/>
+  <path d="M42 118C34 90 48 56 75 43C102 30 137 33 161 52C185 71 194 106 181 135C169 163 139 181 107 178C74 175 50 147 42 118Z" fill="#FFE58A" stroke="#5B4A3D" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M56 83C69 48 110 36 146 50C162 56 174 68 181 83C166 70 143 67 123 74C103 81 78 79 56 83Z" fill="#FFB08A" stroke="#5B4A3D" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M58 81C51 65 58 49 73 42C85 36 99 39 108 49C88 50 69 62 58 81Z" fill="#8ED8B3" stroke="#5B4A3D" stroke-width="6" stroke-linejoin="round"/>
+  <circle cx="82" cy="105" r="8" fill="#3C332C"/>
+  <circle cx="137" cy="105" r="8" fill="#3C332C"/>
+  <circle cx="67" cy="124" r="10" fill="#FF9EB5" opacity=".75"/>
+  <circle cx="153" cy="124" r="10" fill="#FF9EB5" opacity=".75"/>
+  <path d="M96 129C103 137 117 137 124 129" stroke="#5B4A3D" stroke-width="6" stroke-linecap="round"/>
+  <path d="M78 94C86 88 95 88 102 94" stroke="#5B4A3D" stroke-width="5" stroke-linecap="round"/>
+  <path d="M125 94C133 88 142 88 149 94" stroke="#5B4A3D" stroke-width="5" stroke-linecap="round"/>
+  <path d="M78 160C91 171 129 171 143 160" stroke="#5B4A3D" stroke-width="6" stroke-linecap="round"/>
+  <path d="M56 157C44 165 36 177 35 191" stroke="#5B4A3D" stroke-width="6" stroke-linecap="round"/>
+  <path d="M164 157C176 165 184 177 185 191" stroke="#5B4A3D" stroke-width="6" stroke-linecap="round"/>
+  <rect x="65" y="152" width="90" height="35" rx="17.5" fill="#8CC9FF" stroke="#5B4A3D" stroke-width="6"/>
+  <path d="M82 169H138" stroke="#FFF7DF" stroke-width="5" stroke-linecap="round"/>
+  <path d="M95 56C106 48 125 47 139 55" stroke="#FFF7DF" stroke-width="6" stroke-linecap="round" opacity=".85"/>
+  <rect x="58" y="24" width="105" height="34" rx="17" fill="#FFFFFF" stroke="#5B4A3D" stroke-width="6"/>
+  <text x="110" y="47" text-anchor="middle" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18" font-weight="800" fill="#3C332C">Samguo</text>
+  <path d="M177 41L182 51L193 53L185 61L187 72L177 67L167 72L169 61L161 53L172 51L177 41Z" fill="#FF9EB5" stroke="#5B4A3D" stroke-width="4" stroke-linejoin="round"/>
+</svg>

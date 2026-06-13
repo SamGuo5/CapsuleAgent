@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 180" role="img" aria-label="胶囊小助手">
+  <defs>
+    <linearGradient id="body" x1="26" x2="194" y1="70" y2="70" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4ea8de"/>
+      <stop offset=".48" stop-color="#4ea8de"/>
+      <stop offset=".49" stop-color="#fffaf0"/>
+      <stop offset=".51" stop-color="#fffaf0"/>
+      <stop offset=".52" stop-color="#8ed8b3"/>
+      <stop offset="1" stop-color="#8ed8b3"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="110" cy="152" rx="62" ry="12" fill="#5b4a3d" opacity=".16"/>
+  <path d="M44 62c0-26 22-48 48-48h36c26 0 48 22 48 48s-22 48-48 48H92c-26 0-48-22-48-48Z" fill="url(#body)" stroke="#5b4a3d" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M106 19v86" stroke="#5b4a3d" stroke-width="6" opacity=".24"/>
+  <circle cx="82" cy="60" r="6" fill="#5b4a3d"/>
+  <circle cx="138" cy="60" r="6" fill="#5b4a3d"/>
+  <path d="M96 76c7 8 21 8 28 0" fill="none" stroke="#5b4a3d" stroke-width="6" stroke-linecap="round"/>
+  <path d="M76 107v24" stroke="#5b4a3d" stroke-width="8" stroke-linecap="round"/>
+  <path d="M144 107v24" stroke="#5b4a3d" stroke-width="8" stroke-linecap="round"/>
+  <path d="M52 74 24 92" stroke="#5b4a3d" stroke-width="8" stroke-linecap="round"/>
+  <path d="M168 74 196 92" stroke="#5b4a3d" stroke-width="8" stroke-linecap="round"/>
+  <path d="M32 36c12-12 23-16 35-18" stroke="#ffe58a" stroke-width="8" stroke-linecap="round"/>
+  <path d="M155 24c11 3 20 9 28 19" stroke="#ff9eb5" stroke-width="8" stroke-linecap="round"/>
+</svg>
